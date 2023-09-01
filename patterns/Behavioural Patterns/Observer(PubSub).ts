@@ -4,39 +4,42 @@
 // And we could have multiple Observers (aka Subscribers) which will recieve events from the Subject in realtime.
 
 // interface of subscriber
-class Subscriber {
-  sendNotification(channel, event) {}
+interface Subscriber {
+  sendNotification(channel: string, event: string): void
 }
 
 class YoutubeChannel {
-  constructor(name:string) {
+  public name: string
+  private subscribers: Subscriber[]
+
+  constructor(name: string) {
     this.name = name;
     this.subscribers = [];
   }
 
-  subscribe(sub) {
-    this.subscribers.push(sub);
+  public subscribe(subscriber: Subscriber): void {
+    this.subscribers.push(subscriber);
   }
 
-  notify(event) {
+  public notify(event: string): void {
     for (const sub of this.subscribers) sub.sendNotification(this.name, event);
   }
 }
 
-type
 
-class YoutubeUser extends Subscriber {
-  constructor(name) {
-    super();
+class YoutubeUser implements Subscriber {
+  name: string
+
+  constructor(name: string) {
     this.name = name;
   }
 
-  sendNotification(channel, event) {
+  public sendNotification(channel: string, event: string): void {
     console.log(`User ${this.name} received notification from ${channel}: ${event}`);
   }
 }
 
-channel = new YoutubeChannel("neetcode");
+const channel = new YoutubeChannel("neetcode");
 
 channel.subscribe(new YoutubeUser("sub1"));
 channel.subscribe(new YoutubeUser("sub2"));
